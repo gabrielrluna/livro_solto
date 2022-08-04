@@ -1,3 +1,17 @@
+<?php
+use Projeto\Usuario;
+
+if( isset($_GET['acesso_proibido'])){
+	$feedback = "Você deve logar primeiro!";
+} elseif ( isset($_GET['campos_obrigatorios'])) {
+	$feedback = 'Você deve preencher os dois campos!';
+} elseif ( isset($_GET['senha_incorreta'])){
+	$feedback = 'Senha Incorreta!';
+} elseif ( isset($_GET['logout'])){
+	$feedback = 'Você saiu do sistema';
+}
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -40,23 +54,56 @@
     
                       <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Crie sua conta</h5>
     
-                      <div class="form-outline mb-4">
+                      <div class="form-outline mb-2">
+                        <input type="name" id="form2Example17" class="form-control form-control-lg" />
+                        <label class="form-label" for="form2Example17" id="nome">Nome</label>
+                      </div>
+
+                      <div class="form-outline mb-2">
                         <input type="email" id="form2Example17" class="form-control form-control-lg" />
-                        <label class="form-label" for="form2Example17">Email</label>
+                        <label class="form-label" for="form2Example17" id="email">Email</label>
                       </div>
     
-                      <div class="form-outline mb-4">
+                      <div class="form-outline mb-2">
                         <input type="password" id="form2Example27" class="form-control form-control-lg" />
-                        <label class="form-label" for="form2Example27">Senha</label>
+                        <label class="form-label" for="form2Example27" id="senha">Senha</label>
                       </div>
-                      <div class="form-outline mb-4">
+                      <div class="form-outline mb-2">
                         <input type="password" id="form2Example27" class="form-control form-control-lg" />
-                        <label class="form-label" for="form2Example27">Confirmar senha</label>
+                        <label class="form-label" for="form2Example27" id="confirma-senha">Confirmar senha</label>
                       </div>
-    
-    
-                      <div class="pt-1 mb-4">
-                        <a href="login.php"><button class="btn btn-lg btn-block btn-cadastro" type="button">Cadastrar</button></a>
+ 
+                     <div class="pt-1 mb-4">
+                      <select class="form-select mb-2" aria-label="Default select example" id="senac">
+                      <option selected>Escolha a sua unidade do Senac</option>
+                      <option value="1">Aclimação</option>
+                      <option value="2">Francisco Matarazzo</option>
+                      <option value="3">Guarulhos - Celestino</option>
+                      <option value="4">Guarulhos - Faccini</option>
+                      <option value="5">Itaquera</option>
+                      <option value="6">Jabaquara</option>
+                      <option value="7">Jardim Primavera</option>
+                      <option value="8">Lapa - Faustolo</option>
+                      <option value="9">Lapa - Scipião</option>
+                      <option value="10">Lapa - Tito</option>
+                      <option value="11">Largo Treze</option>
+                      <option value="12">Nações Unidas</option>
+                      <option value="13">Osasco</option>
+                      <option value="14">Penha</option>
+                      <option value="15">Santana</option>
+                      <option value="16">Santo André</option>
+                      <option value="17">São Bernardo do Campo</option>
+                      <option value="18">São Miguel Paulista</option>
+                      <option value="19">Taboão da Serra</option>
+                      <option value="20">Tatuapé - Cel. Luís Americano</option>
+                      <option value="21">Tatuapé - Serra de Bragança</option>
+                      <option value="22">Tiradentes</option>
+                      <option value="23">Vila Prudente</option>
+
+
+                      </select>
+
+                      <a href="login.php"><button class="btn btn-lg btn-block btn-cadastro" type="button" id="cadastrar">Cadastrar</button></a>
                       </div>
     
                       <a href="login.php">
@@ -75,6 +122,30 @@
       </div>
     </section>
   </main>
+
+  <?php
+    if (isset($_POST['cadastrar'])){
+    if(empty($_POST['nome']) ||empty($_POST['email']) || empty($_POST['senha']) || empty($_POST['confirma-senha']) || empty($_POST['senac'])){
+	  
+      header("location:cadastro.php?campos_obrigatorios");
+} else {
+	
+	} else {
+		// Verificação de senha e login
+    $senhaDigitada = password_hash($_POST['senha']);
+    $confirmaSenha = password_hash($_POST['confirma-senha']);
+		if($senhaDigitada === $confirmaSenha){
+			header("location:login.php?cadastro_concluido");
+		} else {
+			header ("location:login.php?dados_incorretos");
+		}
+	}
+}
+}
+
+
+?>
+
 
   <div class="modal fade campoModal" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
   aria-hidden="true">
