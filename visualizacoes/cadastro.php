@@ -1,15 +1,28 @@
 <?php
+require_once "../vendor/autoload.php";
 use Projeto\Usuario;
 
-if( isset($_GET['acesso_proibido'])){
-	$feedback = "Você deve logar primeiro!";
-} elseif ( isset($_GET['campos_obrigatorios'])) {
-	$feedback = 'Você deve preencher os dois campos!';
-} elseif ( isset($_GET['senha_incorreta'])){
-	$feedback = 'Senha Incorreta!';
-} elseif ( isset($_GET['logout'])){
-	$feedback = 'Você saiu do sistema';
+
+$usuario = new Usuario;
+if( isset($_GET['campos_obrigatorios'])) {
+	$feedback = 'Você deve preencher todos os campos!';
+}elseif ( isset($_GET['senhas_diferentes'])){
+	$feedback = "Os campos 'Senha' e 'Confirmar senha' devem ser idênticos";
 }
+
+
+if(isset($_POST['cadastrar'])){
+	$usuario->setNome($_POST['nome']);
+	$usuario->setEmail($_POST['email']);
+	$usuario->setSenac($_POST['senac']);
+
+	$usuario->setSenha($usuario->codificaSenha($_POST['senha']));
+	//echo $usuario->getSenha();
+	$usuario->cadastrar();
+	header("location:login.php");
+
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -45,36 +58,39 @@ if( isset($_GET['acesso_proibido'])){
                 <div class="col-md-6 col-lg-7 d-flex align-items-center">
                   <div class="card-body p-4 p-lg-5 text-black">
     
-                    <form>
-    
-                      <div class="d-flex align-items-center mb-3 pb-1">
+                    <form action="" method="POST" id="cadastro" name="cadastro">
+                        <div class="d-flex align-items-center mb-3 pb-1">
                         <i class="fas fa-cubes fa-2x me-3" style="color: #ff6219;"></i>
                         <span class="h1 fw-bold mb-0"><a href="index.php"><img src="../imagens/logo-e-favicon/Logo-sem-fundo-2.png" alt="Letra L com bordas arredondas seguida de Livro Solto, indicando o logo do site" width="25%"></a></span>
                       </div>
     
                       <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Crie sua conta</h5>
+                    <?php if(isset($feedback)){?>
+				                <p class="my-2 alert alert-warning text-center">
+				                <?= $feedback?> <i class="bi bi-x-circle-fill"></i> </p>
+                    <?php } ?>
     
                       <div class="form-outline mb-2">
-                        <input type="name" id="form2Example17" class="form-control form-control-lg" />
-                        <label class="form-label" for="form2Example17" id="nome">Nome</label>
+                        <input type="name"  name="nome" id="form2Example17" class="form-control form-control-lg" />
+                        <label class="form-label" for="nome" id="nome">Nome</label>
                       </div>
 
                       <div class="form-outline mb-2">
-                        <input type="email" id="form2Example17" class="form-control form-control-lg" />
-                        <label class="form-label" for="form2Example17" id="email">Email</label>
+                        <input type="email" name="email" id="form2Example17" class="form-control form-control-lg" />
+                        <label class="form-label" for="email" id="email" >Email</label>
                       </div>
     
                       <div class="form-outline mb-2">
-                        <input type="password" id="form2Example27" class="form-control form-control-lg" />
-                        <label class="form-label" for="form2Example27" id="senha">Senha</label>
+                        <input type="password" name="senha" id="form2Example27" class="form-control form-control-lg" />
+                        <label class="form-label" for="senha" id="senha" >Senha</label>
                       </div>
                       <div class="form-outline mb-2">
-                        <input type="password" id="form2Example27" class="form-control form-control-lg" />
-                        <label class="form-label" for="form2Example27" id="confirma-senha">Confirmar senha</label>
+                        <input type="password" name="confirma-senha" id="form2Example27" class="form-control form-control-lg" />
+                        <label class="form-label" for="confirma-senha" id="confirma-senha" >Confirmar senha</label>
                       </div>
  
                      <div class="pt-1 mb-4">
-                      <select class="form-select mb-2" aria-label="Default select example" id="senac">
+                      <select class="form-select mb-2" aria-label="Default select example" id="senac" name="senac">
                       <option selected>Escolha a sua unidade do Senac</option>
                       <option value="1">Aclimação</option>
                       <option value="2">Francisco Matarazzo</option>
@@ -103,7 +119,9 @@ if( isset($_GET['acesso_proibido'])){
 
                       </select>
 
-                      <a href="login.php"><button class="btn btn-lg btn-block btn-cadastro" type="button" id="cadastrar">Cadastrar</button></a>
+
+
+                      <button class="btn btn-lg btn-block btn-cadastro" type="submit" id="cadastrar" name="cadastrar">Cadastrar</button>
                       </div>
     
                       <a href="login.php">
@@ -124,28 +142,19 @@ if( isset($_GET['acesso_proibido'])){
   </main>
 
   <?php
-    if (isset($_POST['cadastrar'])){
-    if(empty($_POST['nome']) ||empty($_POST['email']) || empty($_POST['senha']) || empty($_POST['confirma-senha']) || empty($_POST['senac'])){
-	  
-      header("location:cadastro.php?campos_obrigatorios");
-} else {
-	
-	} else {
-		// Verificação de senha e login
-    $senhaDigitada = password_hash($_POST['senha']);
-    $confirmaSenha = password_hash($_POST['confirma-senha']);
-		if($senhaDigitada === $confirmaSenha){
-			header("location:login.php?cadastro_concluido");
-		} else {
-			header ("location:login.php?dados_incorretos");
-		}
-	}
-}
-}
-
-
-?>
-
+                     if (isset($_POST['cadastrar'])){
+                     if(empty($_POST['nome']) ||empty($_POST['email']) || empty($_POST['senha']) || empty($_POST['confirma-senha']) || empty($_POST['senac'])){
+	                      header("location:visualizacoes/cadastro.php?campos_obrigatorios");
+                      } else {
+		                  // Verificação de senha 
+                      if (password_verify($_POST['senha'], $_POST['confirma-senha'])){
+                     header ("location:visualizacoes/login.php?");
+	                	} else {
+	              		header ("location:visualizacoes/cadastro.php?senhas_diferentes");
+		                }
+                  	}
+                  }
+                  ?>
 
   <div class="modal fade campoModal" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
   aria-hidden="true">

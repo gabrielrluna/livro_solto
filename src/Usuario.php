@@ -23,16 +23,93 @@ final class Usuario{
 
         try{
             $consulta = $this->conexao->prepare($sql);
-            $consulta = bindParam (":nome", $this->nome, PDO::PARAM_STR);
-            $consulta = bindParam (":email", $this->email, PDO::PARAM_STR);
-            $consulta = bindParam (":senha", $this->senha, PDO::PARAM_STR);
-            $consulta = bindParam (":senac", $this->senac, PDO::PARAM_STR);
+            $consulta->bindParam(":nome", $this->nome, PDO::PARAM_STR);
+            $consulta->bindParam(":email", $this->email, PDO::PARAM_STR);
+            $consulta->bindParam(":senha", $this->senha, PDO::PARAM_STR);
+            $consulta->bindParam(":senac", $this->senac, PDO::PARAM_STR);
             $consulta->execute();
         } catch(Exception $erro){
             die ("Erro: ". $erro->getMessage());
         }
    }
 
+   public function codificaSenha(string $senha):string{
+    return password_hash($senha, PASSWORD_DEFAULT);
+    }
 
+   public function verificaSenha(
+    string $senhaFormulario, string $senhaBanco):string {
+        /* Usamos a password_verify paa comparar as duas senhas: a digitada no formulário e a existente no banco*/
+        if (password_verify($senhaFormulario, $senhaBanco)){
+            //se forem iguais, mantemos a senha existente no banco
+            return $senhaBanco;
+        }else {
+            //se forem diferentes, então codificamos esta nova senha
+            return $this->codificaSenha($senhaFormulario);
+        }
+    }
+
+    public function inserir():void { 
+        $sql = "INSERT INTO usuarios(nome, email, senha, senac) VALUES (:nome, :email, :senha, :senac)";
+        
+        try {
+            $consulta = $this->conexao->prepare($sql);
+            $consulta->bindParam(":nome", $this->nome, PDO::PARAM_STR);
+            $consulta->bindParam(":email", $this->email, PDO::PARAM_STR);
+            $consulta->bindParam(":senha", $this->senha, PDO::PARAM_STR);
+            $consulta->bindParam(":senac", $this->senac, PDO::PARAM_STR);
+            $consulta->execute();
+        } catch (Exception $erro) {
+        die ("Erro: ". $erro->getMessage());
+    }
    
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+    public function setId(int $id)
+    {
+        $this->id = filter_var($id, FILTER_SANITIZE_NUMBER_INT);
+    }
+
+
+    public function getNome(): string
+    {
+        return $this->nome;
+    }
+    public function setNome(string $nome)
+    {
+        $this->nome = filter_var($nome, FILTER_SANITIZE_SPECIAL_CHARS);
+    }
+
+
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+        public function setEmail(string $email)
+    {
+        $this->email = filter_var($email, FILTER_SANITIZE_EMAIL);
+    }
+
+    public function getSenha(): string
+    {
+        return $this->senha;
+    }
+    public function setSenha(string $senha)
+    {
+        $this->senha = filter_var($senha, FILTER_SANITIZE_SPECIAL_CHARS);
+    }
+
+
+    public function getSenac(): string   
+    {
+        return $this->senac;
+    }
+    public function setSenac(string $senac)
+    {
+        $this->senac = filter_var($senac, FILTER_SANITIZE_SPECIAL_CHARS);
+    }
 }
