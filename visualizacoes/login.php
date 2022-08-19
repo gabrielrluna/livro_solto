@@ -1,3 +1,24 @@
+<?php
+use Projeto\Usuario;
+use Projeto\ControleDeAcesso;
+require_once "../vendor/autoload.php";
+
+// Mensagem de feedback relacionada ao acesso 
+if( isset($_GET['acesso_proibido'])){
+	$feedback = "Você deve logar primeiro!";
+} elseif ( isset($_GET['campos_obrigatorios'])) {
+	$feedback = 'Você deve preencher os dois campos!';
+} elseif ( isset($_GET['nao_encontrado'])){
+	$feedback = 'Usuário não encontrado';
+} elseif ( isset($_GET['senha_incorreta'])){
+	$feedback = 'Senha Incorreta!';
+} elseif ( isset($_GET['logout'])){
+	$feedback = 'Você saiu do sistema';
+} elseif ( isset($_GET['faca_o_login'])){
+	$feedback = 'Cadastro feito com sucesso! Faça o login para entrar no "Livro Solto"!';
+}
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -39,19 +60,24 @@
                       </div>
     
                       <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Faça login com sua conta</h5>
+
+                      <?php if(isset($feedback)){?>
+				                <p class="my-2 alert alert-warning text-center">
+			                	<?= $feedback?> <i class="bi bi-x-circle-fill"></i> </p>
+                      <?php } ?>
     
                       <div class="form-outline mb-4">
-                        <input type="email" id="form2Example17" class="form-control form-control-lg" />
-                        <label class="form-label" for="form2Example17">Email</label>
+                        <label class="form-label" for="email">Email</label>
+                        <input type="email" name="email" class="form-control form-control-lg" />
                       </div>
     
                       <div class="form-outline mb-4">
-                        <input type="password" id="form2Example27" class="form-control form-control-lg" />
-                        <label class="form-label" for="form2Example27">Senha</label>
+                        <label class="form-label" for="senha">Senha</label>
+                        <input type="password" name="senha" class="form-control form-control-lg" />
                       </div>
     
                       <div class="pt-1 mb-4">
-                        <a href="listadelivros.php" alt="Link para visualizar livros disponíveis e entrar na conta"><button class="btn btn-lg btn-block btn-login" type="button">Login</button></a>
+                        <a href="listadelivros.php" alt="Link para visualizar livros disponíveis e entrar na conta"><button class="btn btn-lg btn-block btn-login" type="submit" name="login">Login</button></a>
                       </div>
     
                       <a class="small text-muted esqueceu-a-senha" href="#!" type="button" data-bs-toggle="modal" data-bs-target="#exampleModalSenha" title="recuperar senha">Esqueceu a senha?</a>
@@ -59,7 +85,39 @@
                       <a class="small text-muted termos mx-3" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">Termos de uso</a>
                       <a href="#!" class="small text-muted privacidade" type="button" data-bs-toggle="modal" data-bs-target="#exampleModalDois">Política de privacidade</a>
                     </form>
-    
+<?php
+// Verificação de campos do formulário
+if (isset($_POST['entrar'])){
+if(empty($_POST['email']) || empty($_POST['senha'])){
+	header("location:login.php?campos_obrigatorios");
+} else {
+	// Capturamos o email informado
+	$usuario = new Usuario;
+	$usuario->setEmail($_POST['email']);
+
+	// Buscando um usuario no banco a partir do email 
+	$dados = $usuario->buscar();
+// if($dados === false)
+	if (!$dados)	{
+		// echo "nao tem ninguém nessa bagaça!";
+		header ("location:login.php?nao_encontrado");
+	} else {
+		// Verificação de senha e login
+		if(password_verify($_POST['senha'], $dados['senha'])){
+			//Estando certa, será feito o login
+			$sessao = new ControleDeAcesso;
+			$sessao->login($dados['id'], $dados['nome'], $dados['tipo']);
+			header("location:admin/index.php");
+		} else {
+			// Caso contrário, mantenha na página login e apresente uma mensagem
+			header ("location:login.php?senha_incorreta");
+		}
+	}
+}
+}
+
+
+?>
                   </div>
                 </div>
               </div>

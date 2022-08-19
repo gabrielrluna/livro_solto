@@ -103,6 +103,15 @@ final class Usuario{
         $this->senha = filter_var($senha, FILTER_SANITIZE_SPECIAL_CHARS);
     }
 
+    public function getConfirmaSenha(): string
+    {
+        return $this->confirmaSenha;
+    }
+    public function setConfirmaSenha(string $confirmaSenha)
+    {
+        $this->confirmaSenha = filter_var($confirmaSenha, FILTER_SANITIZE_SPECIAL_CHARS);
+    }
+
 
     public function getSenac(): string   
     {

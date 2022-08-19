@@ -1,27 +1,25 @@
 <?php
-require_once "../vendor/autoload.php";
+ob_start();
 use Projeto\Usuario;
+require_once "../vendor/autoload.php";
 
-
-$usuario = new Usuario;
 if( isset($_GET['campos_obrigatorios'])) {
 	$feedback = 'Você deve preencher todos os campos!';
 }elseif ( isset($_GET['senhas_diferentes'])){
 	$feedback = "Os campos 'Senha' e 'Confirmar senha' devem ser idênticos";
 }
 
+$usuario = new Usuario;
 
 if(isset($_POST['cadastrar'])){
-	$usuario->setNome($_POST['nome']);
-	$usuario->setEmail($_POST['email']);
-	$usuario->setSenac($_POST['senac']);
+  $usuario->setNome($_POST['nome']);
+  $usuario->setEmail($_POST['email']);
+  $usuario->setSenac($_POST['senac']);
+  $usuario->setSenha($usuario->codificaSenha($_POST['senha']));
+  $usuario->cadastrar();
+  // header("location:login.php");
+};
 
-	$usuario->setSenha($usuario->codificaSenha($_POST['senha']));
-	//echo $usuario->getSenha();
-	$usuario->cadastrar();
-	header("location:login.php");
-
-}
 
 ?>
 
@@ -71,50 +69,52 @@ if(isset($_POST['cadastrar'])){
                     <?php } ?>
     
                       <div class="form-outline mb-2">
-                        <input type="name"  name="nome" id="form2Example17" class="form-control form-control-lg" />
-                        <label class="form-label" for="nome" id="nome">Nome</label>
+                      <label class="form-label" for="nome">Nome</label>
+                      <input type="name"  name="nome" class="form-control form-control-lg" />
+                        
                       </div>
 
                       <div class="form-outline mb-2">
-                        <input type="email" name="email" id="form2Example17" class="form-control form-control-lg" />
-                        <label class="form-label" for="email" id="email" >Email</label>
+                      <label class="form-label" for="email" >Email</label>
+                      <input type="email" name="email" class="form-control form-control-lg" />
+
                       </div>
     
                       <div class="form-outline mb-2">
-                        <input type="password" name="senha" id="form2Example27" class="form-control form-control-lg" />
-                        <label class="form-label" for="senha" id="senha" >Senha</label>
+                      <label class="form-label" for="senha" id="senha" >Senha</label>
+                      <input type="password" name="senha" id="form2Example27" class="form-control form-control-lg" />
                       </div>
                       <div class="form-outline mb-2">
-                        <input type="password" name="confirma-senha" id="form2Example27" class="form-control form-control-lg" />
-                        <label class="form-label" for="confirma-senha" id="confirma-senha" >Confirmar senha</label>
+                      <label class="form-label" for="confirma-senha">Confirme sua senha</label>
+                      <input type="password" name="confirma-senha" class="form-control form-control-lg" />
                       </div>
  
                      <div class="pt-1 mb-4">
                       <select class="form-select mb-2" aria-label="Default select example" id="senac" name="senac">
                       <option selected>Escolha a sua unidade do Senac</option>
-                      <option value="1">Aclimação</option>
-                      <option value="2">Francisco Matarazzo</option>
-                      <option value="3">Guarulhos - Celestino</option>
-                      <option value="4">Guarulhos - Faccini</option>
-                      <option value="5">Itaquera</option>
-                      <option value="6">Jabaquara</option>
-                      <option value="7">Jardim Primavera</option>
-                      <option value="8">Lapa - Faustolo</option>
-                      <option value="9">Lapa - Scipião</option>
-                      <option value="10">Lapa - Tito</option>
-                      <option value="11">Largo Treze</option>
-                      <option value="12">Nações Unidas</option>
-                      <option value="13">Osasco</option>
-                      <option value="14">Penha</option>
-                      <option value="15">Santana</option>
-                      <option value="16">Santo André</option>
-                      <option value="17">São Bernardo do Campo</option>
-                      <option value="18">São Miguel Paulista</option>
-                      <option value="19">Taboão da Serra</option>
-                      <option value="20">Tatuapé - Cel. Luís Americano</option>
-                      <option value="21">Tatuapé - Serra de Bragança</option>
-                      <option value="22">Tiradentes</option>
-                      <option value="23">Vila Prudente</option>
+                      <option value="Aclimação">Aclimação</option>
+                      <option value="Francisco Matarazzo">Francisco Matarazzo</option>
+                      <option value="Guarulhos - Celestino">Guarulhos - Celestino</option>
+                      <option value="Guarulhos - Faccini">Guarulhos - Faccini</option>
+                      <option value="Itaquera">Itaquera</option>
+                      <option value="Jabaquara">Jabaquara</option>
+                      <option value="Jardim Primavera">Jardim Primavera</option>
+                      <option value="Lapa - Faustolo">Lapa - Faustolo</option>
+                      <option value="Lapa - Scipião">Lapa - Scipião</option>
+                      <option value="Lapa - Tito">Lapa - Tito</option>
+                      <option value="Largo Treze">Largo Treze</option>
+                      <option value="Nações Unidas">Nações Unidas</option>
+                      <option value="Osasco">Osasco</option>
+                      <option value="Penha">Penha</option>
+                      <option value="Santana">Santana</option>
+                      <option value="Santo André">Santo André</option>
+                      <option value="São Bernardo do Campo">São Bernardo do Campo</option>
+                      <option value="São Miguel Paulista">São Miguel Paulista</option>
+                      <option value="Taboão da Serra">Taboão da Serra</option>
+                      <option value="Tatuapé - Cel. Luís Americano">Tatuapé - Cel. Luís Americano</option>
+                      <option value="Tatuapé - Serra de Bragança">Tatuapé - Serra de Bragança</option>
+                      <option value="Tiradentes">Tiradentes</option>
+                      <option value="Vila Prudente">Vila Prudente</option>
 
 
                       </select>
@@ -130,7 +130,26 @@ if(isset($_POST['cadastrar'])){
                       <a class="small text-muted termos mx-3" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">Termos de uso</a>
                       <a href="#!" class="small text-muted privacidade" type="button" data-bs-toggle="modal" data-bs-target="#exampleModalDois">Política de privacidade</a>
                     </form>
-    
+
+                    <?php
+
+
+                     if (isset($_POST['cadastrar'])){
+
+                      $senha = password_hash($_POST['senha'], PASSWORD_DEFAULT);
+                      $confirmaSenha = $_POST['confirma-senha'];
+                    
+                      //Aqui nós vamos verificar se todos os campos estão preenhidos
+                     if(empty($_POST['nome']) || empty($_POST['email']) || empty($_POST['senha']) || empty($_POST['confirma-senha']) || empty($_POST['senac'])){
+	                      header("location:cadastro.php?campos_obrigatorios");
+                      } elseif (password_verify($confirmaSenha ,$senha)){
+                     header ("location:login.php?faca_o_login");
+	                	}  else {
+                      header ("location:cadastro.php?senhas_diferentes");
+                  	}
+                    }
+                  
+                  ?>
                   </div>
                 </div>
               </div>
@@ -141,20 +160,7 @@ if(isset($_POST['cadastrar'])){
     </section>
   </main>
 
-  <?php
-                     if (isset($_POST['cadastrar'])){
-                     if(empty($_POST['nome']) ||empty($_POST['email']) || empty($_POST['senha']) || empty($_POST['confirma-senha']) || empty($_POST['senac'])){
-	                      header("location:visualizacoes/cadastro.php?campos_obrigatorios");
-                      } else {
-		                  // Verificação de senha 
-                      if (password_verify($_POST['senha'], $_POST['confirma-senha'])){
-                     header ("location:visualizacoes/login.php?");
-	                	} else {
-	              		header ("location:visualizacoes/cadastro.php?senhas_diferentes");
-		                }
-                  	}
-                  }
-                  ?>
+
 
   <div class="modal fade campoModal" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
   aria-hidden="true">
@@ -222,3 +228,6 @@ aria-hidden="true">
 </body>
 
 </html>
+<?php
+ob_end_flush();
+?>
