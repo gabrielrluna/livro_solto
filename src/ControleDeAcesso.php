@@ -10,8 +10,6 @@ final class ControleDeAcesso{
     }
 
     public function verificaAcesso():void{
-        // Esta função serve para verificar se o usuário está de fato logado.
-        // Caso não esteja, ele será redirecionado para a tela de login.
         if(!isset($_SESSION['id']))
         session_destroy();
         header("location:../visualizacoes/login.php?acesso_proibido");
@@ -25,10 +23,9 @@ final class ControleDeAcesso{
         }
     }
 
-    public function login(int $id, string $nome, string $email){
+    public function login(int $id, string $nome){
         $_SESSION['id'] = $id;
         $_SESSION['nome'] = $nome;
-        $_SESSION['email'] = $email;
     }
 
     public function logout():void{

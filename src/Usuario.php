@@ -39,7 +39,6 @@ final class Usuario{
 
    public function verificaSenha(
     string $senhaFormulario, string $senhaBanco):string {
-        /* Usamos a password_verify paa comparar as duas senhas: a digitada no formulário e a existente no banco*/
         if (password_verify($senhaFormulario, $senhaBanco)){
             //se forem iguais, mantemos a senha existente no banco
             return $senhaBanco;
@@ -62,8 +61,21 @@ final class Usuario{
         } catch (Exception $erro) {
         die ("Erro: ". $erro->getMessage());
     }
-   
+      
     }
+
+    public function buscar() {
+            $sql = "SELECT * FROM usuarios WHERE email = :email";
+            try {
+                $consulta = $this->conexao->prepare($sql);
+                $consulta->bindParam(":email", $this->email, PDO::PARAM_STR);
+                $consulta->execute();
+                $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
+            } catch (Exception $erro) {
+                die("Erro: ". $erro->getMessage());
+            }
+            return $resultado;
+        }
 
     public function getId(): int
     {

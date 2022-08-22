@@ -52,7 +52,7 @@ if( isset($_GET['acesso_proibido'])){
                 <div class="col-md-6 col-lg-7 d-flex align-items-center">
                   <div class="card-body p-4 p-lg-5 text-black">
     
-                    <form>
+                    <form action="" method="post" id="form-login" name="form-login">
     
                       <div class="d-flex align-items-center mb-3 pb-1">
                         <i class="fas fa-cubes fa-2x me-3" style="color: #ff6219;"></i>
@@ -77,7 +77,7 @@ if( isset($_GET['acesso_proibido'])){
                       </div>
     
                       <div class="pt-1 mb-4">
-                        <a href="listadelivros.php" alt="Link para visualizar livros disponíveis e entrar na conta"><button class="btn btn-lg btn-block btn-login" type="submit" name="login">Login</button></a>
+                        <a href="listadelivros.php" alt="Link para visualizar livros disponíveis e entrar na conta"><button class="btn btn-lg btn-block btn-login" type="submit" name="entrar">Login</button></a>
                       </div>
     
                       <a class="small text-muted esqueceu-a-senha" href="#!" type="button" data-bs-toggle="modal" data-bs-target="#exampleModalSenha" title="recuperar senha">Esqueceu a senha?</a>
@@ -91,30 +91,28 @@ if (isset($_POST['entrar'])){
 if(empty($_POST['email']) || empty($_POST['senha'])){
 	header("location:login.php?campos_obrigatorios");
 } else {
-	// Capturamos o email informado
-	$usuario = new Usuario;
+  // Buscando um usuário no banco de dados para fazer o login 
+  $usuario = new Usuario;
 	$usuario->setEmail($_POST['email']);
-
-	// Buscando um usuario no banco a partir do email 
-	$dados = $usuario->buscar();
-// if($dados === false)
+  $dados = $usuario->buscar();
 	if (!$dados)	{
-		// echo "nao tem ninguém nessa bagaça!";
 		header ("location:login.php?nao_encontrado");
 	} else {
-		// Verificação de senha e login
 		if(password_verify($_POST['senha'], $dados['senha'])){
-			//Estando certa, será feito o login
-			$sessao = new ControleDeAcesso;
-			$sessao->login($dados['id'], $dados['nome'], $dados['tipo']);
-			header("location:admin/index.php");
+      $sessao = new ControleDeAcesso;
+			$sessao->login($dados['id'], $dados['nome']);
+			header("location:listadelivros.php");
 		} else {
-			// Caso contrário, mantenha na página login e apresente uma mensagem
-			header ("location:login.php?senha_incorreta");
+      header ("location:login.php?senha_incorreta");
 		}
 	}
 }
+
+// Criando sistema de recuperação de senha 
+
+
 }
+
 
 
 ?>
