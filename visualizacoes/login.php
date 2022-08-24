@@ -92,6 +92,8 @@ if (isset($_POST['recuperar'])){
     
   }
 
+  $sql = "SELECT senha, id FROM usuario WHERE email = :email";
+
 
 $novaSenha = substr(md5(time()),0,6);
 $novaSenhaCripto = md5(md5($novaSenha));
