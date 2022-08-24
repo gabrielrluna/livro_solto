@@ -80,30 +80,7 @@ if( isset($_GET['acesso_proibido'])){
                         <a href="listadelivros.php" alt="Link para visualizar livros disponíveis e entrar na conta"><button class="btn btn-lg btn-block btn-login" type="submit" name="entrar">Login</button></a>
                       </div>
                         <!-- Aqui nós estamos criando um sistema de recuperação de senha, caso o usuário tenha esquecido -->
-                      <a class="small text-muted esqueceu-a-senha" href="#!" type="button" data-bs-toggle="modal" data-bs-target="#exampleModalSenha" title="recuperar senha" name="recuperar">Esqueceu a senha?</a>
-<?php
-
-if (isset($_POST['recuperar'])){
-
-  $email = $mysqli->escape_string($_POST['email']);
-
-  if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
-    $erro[]="E-mail inválido";
-    
-  }
-
-  $sql = "SELECT senha, id FROM usuario WHERE email = :email";
-
-
-$novaSenha = substr(md5(time()),0,6);
-$novaSenhaCripto = md5(md5($novaSenha));
-
-
-}
-
-
-?>
-
+                      <a class="small text-muted esqueceu-a-senha" href="#!" type="button" data-bs-toggle="modal" data-bs-target="#exampleModalSenha" title="recuperar senha">Esqueceu a senha?</a>
                       <a href="cadastro.php" alt="Link para cadastrar uma conta"><p class="mb-5 pb-lg-2 mt-2" >Não possui cadastro? Cadastre-se</p></a>
                       <a class="small text-muted termos mx-3" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">Termos de uso</a>
                       <a href="#!" class="small text-muted privacidade" type="button" data-bs-toggle="modal" data-bs-target="#exampleModalDois">Política de privacidade</a>
@@ -221,16 +198,43 @@ aria-hidden="true">
       <h5 class="modal-title" id="exampleModalLabel">Recupere sua senha</h5>
       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
-    <form class="p-4">
+    <form class="p-4" action="" method="post">
       <div class="mb-3">
         <label for="exampleInputEmail1" class="form-label">Digite o email cadastrado para a recuperação</label>
-        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="email">
         <div id="emailHelp" class="form-text" aria-placeholder="exemplo@gmail.com.br">exemplo@gmail.com.br</div>
+        <?php
+
+if (isset($_POST['recuperar'])){
+
+  // $email = $mysqli->escape_string($_POST['email']);
+
+  // if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
+  //   $erro[]="E-mail inválido";
+    
+  // }
+
+  // $sql = "SELECT senha, id FROM usuario WHERE email = :email";
+
+
+$novaSenha = substr(md5(time()),0,6);
+
+echo $novaSenha;
+// $novaSenhaCripto = md5(md5($novaSenha));
+
+
+};
+
+
+?>
       </div>
-      </form>
+
     <div class="modal-footer">
       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-      <button type="submit" class="btn btn-primary ver-disponiveis">Recuperar senha</button>
+      <button type="submit"  class="btn btn-primary ver-disponiveis" name="recuperar">Recuperar senha</button>
+      </form>
+      
+
         </div>
       </div>
     </div>
