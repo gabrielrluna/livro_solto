@@ -76,7 +76,11 @@ final class Usuario{
             }
             return $resultado;
         }
-
+        // public function novaSenha(){
+        //     $novaSenha = substr(time(), 0, 6);
+        //     $nsCripto = password_hash($novaSenha, PASSWORD_DEFAULT);
+        //     $sql = "UPDATE usuario SET senha = '$nsCripto' WHERE email = :email";
+        // }
     public function getId(): int
     {
         return $this->id;

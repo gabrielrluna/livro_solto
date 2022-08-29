@@ -92,11 +92,10 @@ if (empty($_POST['email'])){
 	if (!$dados)	{
 		header ("location:recuperasenha.php?nao_encontrado");
 	} else {
-        $novaSenha = substr(md5(time()), 0, 6);
-        // echo $novaSenha;
-        $nsCripto = md5(md5($novaSenha));
-
-        $sql = "UPDATE usuario SET senha = '$'"
+        $novaSenha = substr(time(), 0, 6);
+        $nsCripto = password_hash($novaSenha, PASSWORD_DEFAULT);
+        $sql = "UPDATE usuario SET senha = '$nsCripto' WHERE email = :email";
+        
         $mail = new PHPMailer();
         $mail->CharSet = "UTF-8";
         $recuperaEmail = $_POST['email'];
@@ -119,8 +118,8 @@ if (empty($_POST['email'])){
         
         
         $mail->isHTML(true);
-        $mail->Subject = 'Assunto do email';
-        $mail->Body    = 'Este é o conteúdo da mensagem em <b>HTML!</b>';
+        $mail->Subject = 'Recuperação de Senha - Livro Solto';
+        $mail->Body    = 'Olá,'.$dados['nome'].'! Sua nova senha de acesso no "Livro Solto" é '.$novaSenha.'.';
         $mail->AltBody = 'Para visualizar essa mensagem acesse http://site.com.br/mail';
         // $mail->addAttachment('/tmp/image.jpg', 'nome.jpg');
         
