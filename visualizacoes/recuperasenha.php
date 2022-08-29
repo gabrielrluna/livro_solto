@@ -80,6 +80,7 @@ if( isset($_GET['campo_obrigatorio'])) {
                     </form>
 <?php
 // Verificação de email
+
 if (isset($_POST['recuperar'])){
 if (empty($_POST['email'])){
 	header("location:recuperasenha.php?campo_obrigatorio");
@@ -91,6 +92,11 @@ if (empty($_POST['email'])){
 	if (!$dados)	{
 		header ("location:recuperasenha.php?nao_encontrado");
 	} else {
+        $novaSenha = substr(md5(time()), 0, 6);
+        // echo $novaSenha;
+        $nsCripto = md5(md5($novaSenha));
+
+        $sql = "UPDATE usuario SET senha = '$'"
         $mail = new PHPMailer();
         $mail->CharSet = "UTF-8";
         $recuperaEmail = $_POST['email'];
