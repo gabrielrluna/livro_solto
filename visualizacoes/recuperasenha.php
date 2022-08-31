@@ -64,14 +64,14 @@ if( isset($_GET['campo_obrigatorio'])) {
 				                <p class="my-2 alert alert-warning text-center">
 			                	<?= $feedback?> <i class="bi bi-x-circle-fill"></i> </p>
                       <?php } ?>
-    
+
                       <div class="form-outline mb-4">
                         <label class="form-label" for="email">Email</label>
                         <input type="email" name="email" class="form-control form-control-lg" />
                       </div>
                       <div >
                       <button type="submit"  class="btn btn-primary ver-disponiveis" name="recuperar">Recuperar senha</button>
-                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Voltar ao Login</button>
+                      <a href="login.php"><button  type="button"  class="btn btn-secondary" >Voltar ao Login</button></a>
                       </form>
                       </div>
                       <a href="cadastro.php" alt="Link para cadastrar uma conta"><p class="mb-5 pb-lg-2 mt-2" >Não possui cadastro? Cadastre-se</p></a>
@@ -89,13 +89,16 @@ if (empty($_POST['email'])){
   $usuario = new Usuario;
 	$usuario->setEmail($_POST['email']);
   $dados = $usuario->buscar();
+  $usuario->setId($dados['id']);
 	if (!$dados)	{
 		header ("location:recuperasenha.php?nao_encontrado");
 	} else {
-        $novaSenha = substr(time(), 0, 6);
-        $nsCripto = password_hash($novaSenha, PASSWORD_DEFAULT);
-        $sql = "UPDATE usuario SET senha = '$nsCripto' WHERE email = :email";
-        
+    $recuperar = $usuario->novaSenha();
+
+    // var_dump($recuperar);
+    // die();
+
+
         $mail = new PHPMailer();
         $mail->CharSet = "UTF-8";
         $recuperaEmail = $_POST['email'];
@@ -119,7 +122,7 @@ if (empty($_POST['email'])){
         
         $mail->isHTML(true);
         $mail->Subject = 'Recuperação de Senha - Livro Solto';
-        $mail->Body    = 'Olá,'.$dados['nome'].'! Sua nova senha de acesso no "Livro Solto" é '.$novaSenha.'.';
+        $mail->Body    = 'Olá,'.$dados['nome'].'! Sua nova senha de acesso no "Livro Solto" é '.$recuperar.'.';
         $mail->AltBody = 'Para visualizar essa mensagem acesse http://site.com.br/mail';
         // $mail->addAttachment('/tmp/image.jpg', 'nome.jpg');
         
@@ -130,9 +133,9 @@ if (empty($_POST['email'])){
           echo 'Erro: ' . $mail->ErrorInfo;
         };
         header("location:recuperasenha.php?email_enviado");
-		} 
+		} }
 	}
-}
+
 
 
 
