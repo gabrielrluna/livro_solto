@@ -77,7 +77,7 @@ final class Usuario{
             return $resultado;
         }
         public function novaSenha(){
-            $novaSenha = substr(time(), 0, 6);
+            $novaSenha = substr(password_hash(time(), PASSWORD_DEFAULT), 7, 8);
             $nsCripto = password_hash($novaSenha, PASSWORD_DEFAULT);
             $sql = "UPDATE usuarios SET senha = :senha WHERE id = :id";
           try{

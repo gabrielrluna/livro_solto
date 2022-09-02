@@ -115,14 +115,24 @@ if (empty($_POST['email'])){
         
         $mail->setFrom('suporte@livrosolto.com.br');
         $mail->addReplyTo('no-reply@email.com.br');
-        $mail->addAddress($recuperaEmail, 'Nautico 700');
-        $mail->addCC('lunagabri@gmail.com', 'Gabriel');
-        // $mail->addBCC('email@email.com.br', 'Cópia Oculta');
+        $mail->addAddress($recuperaEmail, $dados['nome']);
         
         
         $mail->isHTML(true);
         $mail->Subject = 'Recuperação de Senha - Livro Solto';
-        $mail->Body    = 'Olá,'.$dados['nome'].'! Sua nova senha de acesso no "Livro Solto" é '.$recuperar.'.';
+        $mail->Body=
+        'Olá,'.$dados['nome'].'!<br>
+        
+        Você fez uma solicitação de recuperação de senha.<br><br>
+
+        Caso você tenha recebido esse email por engano, desconsidere. E não se preocupe! Essa mensagem foi enviada apenas para o seu email.<br><br>
+
+        Para voltar a acessar nossos recursos, utilize a senha abaixo. Não se esqueça de diferenciar os caracteres maiúsculos e minúsculos.<br><br>
+        
+        '.$recuperar.'<br><br>
+        
+        
+        ';
         $mail->AltBody = 'Para visualizar essa mensagem acesse http://site.com.br/mail';
         // $mail->addAttachment('/tmp/image.jpg', 'nome.jpg');
         
