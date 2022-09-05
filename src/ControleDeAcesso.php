@@ -35,4 +35,15 @@ final class ControleDeAcesso{
         die();
     }
     
+    public function timeLogout():void{
+        session_start();
+        $tempoInativo = 10;
+        $session_life = time() - $_SESSION['timeout'];
+        if ($session_life > $tempoInativo) {
+            session_destroy();
+            header("location:../visualizacoes/login.php?logout");
+        }
+        $_SESSION['timeout'] = time();
+        }
+    }
 }
