@@ -46,4 +46,4 @@ final class ControleDeAcesso{
         $_SESSION['timeout'] = time();
         }
     }
-}
+

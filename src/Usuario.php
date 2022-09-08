@@ -133,7 +133,7 @@ class Usuario{
         $consulta->bindParam(':senha', $nsCripto, PDO::PARAM_STR);
         $consulta->bindParam(':id', $this->id, PDO::PARAM_INT);
         $consulta->execute();
-      } catch (Exception $erro) {
+      } catch (Exception $erro) { 
         die ("Erro: ". $erro->getMessage());
     } return $novaSenha;
 }

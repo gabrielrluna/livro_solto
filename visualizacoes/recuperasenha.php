@@ -89,10 +89,10 @@ if (empty($_POST['email'])){
   $usuario = new Usuario;
 	$usuario->setEmail($_POST['email']);
   $dados = $usuario->buscar();
-  $usuario->setId($dados['id']);
 	if (!$dados)	{
 		header ("location:recuperasenha.php?nao_encontrado");
 	} else {
+    $usuario->setId($dados['id']);
     $recuperar = $usuario->novaSenha();
 
     // var_dump($recuperar);
